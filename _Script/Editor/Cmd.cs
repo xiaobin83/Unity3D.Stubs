@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
-using System.Threading;
 using System.Diagnostics;
-using System.Text;
 using System.IO;
+using System.Threading;
 
-namespace stubs 
+namespace x600d1dea.stubs 
 {
 	public class Cmd
 	{
@@ -12,40 +11,58 @@ namespace stubs
 
 		public static string ChangeWorkingDir(string dir)
 		{
+			UnityEngine.Debug.Log("Change Working Dir " + dir);
 			var old = cwd;
 			cwd = dir;
 			return old;
 		}
 
-		public static void Execute(string cmdLine)
+		public static void Execute(string cmdLine, bool threaded = false)
 		{
 			cmdLine = cmdLine.Replace('/', '\\');
-			Command(cmdLine);
+			if (threaded)
+			{
+				var th = new Thread(() => Command(cmdLine));
+				th.Start();
+			}
+			else
+			{
+				Command(cmdLine);
+			}
 		}
 
 		static void Command(string cmdLine)
 		{
-			var sb = new StringBuilder();
-			sb.AppendFormat("executing {0}", cmdLine);
-			sb.AppendLine();
-			Thread.Sleep(100);
+			CustomEditorApp.AddTask(() => UnityEngine.Debug.LogFormat("executing {0}", cmdLine));
+			var proc = new Process();
 			var processInfo = new ProcessStartInfo("cmd.exe", "/c " + cmdLine);
 			processInfo.CreateNoWindow = true;
 			processInfo.UseShellExecute = false;
 			processInfo.WorkingDirectory = cwd;
-			var process = Process.Start(processInfo);
-			process.OutputDataReceived += (sender, e) =>
+			processInfo.RedirectStandardOutput = true;
+			processInfo.RedirectStandardError = true;
+
+			proc.StartInfo = processInfo;
+			proc.OutputDataReceived += (s, e) =>
 			{
-				sb.AppendLine(e.Data);
+				if (!string.IsNullOrEmpty(e.Data))
+				{
+					CustomEditorApp.AddTask(() => UnityEngine.Debug.Log(e.Data));
+				}
 			};
-			process.ErrorDataReceived += (sender, e) =>
+			proc.ErrorDataReceived += (s, e) =>
 			{
-				sb.AppendLine(e.Data);
+				if (!string.IsNullOrEmpty(e.Data))
+					CustomEditorApp.AddTask(() => UnityEngine.Debug.LogError(e.Data));
 			};
-			process.WaitForExit();
-			process.Close();
-			sb.AppendLine("end.");
-			UnityEngine.Debug.Log(sb.ToString());
+
+			proc.Start();
+			proc.BeginOutputReadLine();
+			proc.BeginErrorReadLine();
+			proc.WaitForExit();
+			var exitCode = proc.ExitCode;
+			CustomEditorApp.AddTask(() => UnityEngine.Debug.LogFormat("{0} end with {1}", cmdLine, exitCode));
+			proc.Close();
 		}
 
 	}
