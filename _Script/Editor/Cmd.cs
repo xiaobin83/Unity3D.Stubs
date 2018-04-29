@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Runtime.InteropServices;
+
 
 namespace x600d1dea.stubs 
 {
@@ -55,7 +57,6 @@ namespace x600d1dea.stubs
 				if (!string.IsNullOrEmpty(e.Data))
 					CustomEditorApp.AddTask(() => UnityEngine.Debug.LogError(e.Data));
 			};
-
 			proc.Start();
 			proc.BeginOutputReadLine();
 			proc.BeginErrorReadLine();
@@ -63,6 +64,17 @@ namespace x600d1dea.stubs
 			var exitCode = proc.ExitCode;
 			CustomEditorApp.AddTask(() => UnityEngine.Debug.LogFormat("{0} end with {1}", cmdLine, exitCode));
 			proc.Close();
+		}
+
+
+		public static void CreateDirectoryLink(string link, string target)
+		{
+			Command(string.Format("mklink /D {0} {1}", link.Replace("/", "\\"), target.Replace("/", "\\")));
+		}
+
+		public static void DeleteDirectoryLink(string link)
+		{
+			Command(string.Format("rmdir {0}", link.Replace("/", "\\")));
 		}
 
 	}
