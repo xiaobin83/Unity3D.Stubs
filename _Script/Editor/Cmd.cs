@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 
 namespace x600d1dea.stubs 
@@ -77,5 +77,57 @@ namespace x600d1dea.stubs
 			Command(string.Format("rmdir {0}", link.Replace("/", "\\")));
 		}
 
+
+		static void CopyDirectoryInternal(string srcDir, string destDir, Regex[] patterns)
+		{
+			var dir = new DirectoryInfo(srcDir);
+			if (dir.Exists)
+			{
+				if (!Directory.Exists(destDir))
+				{
+					Directory.CreateDirectory(destDir);
+				}
+
+				var files = dir.GetFiles();
+				foreach (FileInfo file in files)
+				{
+					string temppath = Path.Combine(destDir, file.Name);
+					if (patterns.Length > 0)
+					{
+						foreach (var re in patterns)
+						{
+							if (re.IsMatch(file.Name))
+							{
+								file.CopyTo(temppath, true);
+								break;
+							}
+						}
+					}
+					else
+					{
+						file.CopyTo(temppath, true);
+					}
+
+				}
+				
+				DirectoryInfo[] dirs = dir.GetDirectories();
+				foreach (var subdir in dirs)
+				{
+					string temppath = Path.Combine(destDir, subdir.Name);
+					CopyDirectory(subdir.FullName, temppath);
+				}
+			}
+		}
+
+		public static void CopyDirectory(string srcDir, string destDir, params string[] patterns)
+		{
+			Regex[] rePatterns = new Regex[patterns.Length];
+			for (int i = 0; i < patterns.Length; ++i)
+			{
+				rePatterns[i] = new Regex(patterns[i]);
+			}
+			CopyDirectoryInternal(srcDir, destDir, rePatterns);
+
+		}
 	}
 }
