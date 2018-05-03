@@ -9,6 +9,8 @@ namespace x600d1dea.stubs
 	public class GameTools : EditorWindow
 	{
 
+		const string configAsset = "Assets/Unity3D.Stubs.GameTools.asset";
+
 		[MenuItem("Unity3D.Stubs/Game Tools")]
 		static void ShowGameTools()
 		{
@@ -16,26 +18,18 @@ namespace x600d1dea.stubs
 			gameTools.ShowUtility();
 		}
 
-		class Config : ScriptableObject
-		{
-			public DefaultAsset gameDataAsset;
-			public bool encryptGameData;
-			public string pathExportGameData;
-			public string pathPiker;
-			public int cryptoKey = 0x600d1dea;
-		}
 
-		Config config;
+		GameToolsConfig config;
 
 		void OnEnable()
 		{
 			if (config == null)
 			{
-				config = (Config)AssetDatabase.LoadAssetAtPath("Assets/Unity3D.Stubs.GameTools.asset", typeof(Config));
+				config = AssetDatabase.LoadAssetAtPath<GameToolsConfig>(configAsset);
 				if (config == null)
 				{
-					config = ScriptableObject.CreateInstance<Config>();
-					AssetDatabase.CreateAsset(config, "Assets/Unity3D.Stubs.GameTools.asset");
+					config = ScriptableObject.CreateInstance<GameToolsConfig>();
+					AssetDatabase.CreateAsset(config, configAsset);
 					AssetDatabase.SaveAssets();
 					AssetDatabase.Refresh();
 				}

@@ -21,7 +21,6 @@ namespace x600d1dea.stubs
 
 		public static void Execute(string cmdLine, bool threaded = false)
 		{
-			cmdLine = cmdLine.Replace('/', '\\');
 			if (threaded)
 			{
 				var th = new Thread(() => Command(cmdLine));
