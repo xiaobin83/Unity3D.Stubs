@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using x600d1dea.stubs.utils;
 
-namespace x600d1dea.networking
+namespace x600d1dea.stubs.networking
 {
 	public class Packet
 	{
-		public static byte[] TryGetCompleteData(utils.RingPacket ringPacket)
+		public static byte[] TryGetCompleteData(RingPacket ringPacket)
 		{
 			byte[] data = null;
 			if (ringPacket.Length < 4)

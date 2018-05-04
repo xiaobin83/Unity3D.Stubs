@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace x600d1dea.utils 
+namespace x600d1dea.stubs.utils 
 {
 	// notice, these interface is used for those class dosen't extend from monobehaviour. 
 	public interface IAppPauseDelegate

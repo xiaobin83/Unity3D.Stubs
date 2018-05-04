@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace x600d1dea.utils
+namespace x600d1dea.stubs.utils
 {
 	public class DummyMonoBehaviour : MonoBehaviour
 	{

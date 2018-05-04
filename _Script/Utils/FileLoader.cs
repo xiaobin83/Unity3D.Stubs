@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
 
-namespace x600d1dea.utils
+namespace x600d1dea.stubs.utils
 {
 	public class FileLoader 
 	{

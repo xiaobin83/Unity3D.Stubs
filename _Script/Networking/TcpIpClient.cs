@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
-namespace x600d1dea.networking 
+namespace x600d1dea.stubs.networking 
 {
     public class TcpIpClient
     {

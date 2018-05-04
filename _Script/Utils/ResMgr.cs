@@ -3,7 +3,7 @@ using UnityEngine;
 using x600d1dea.pike;
 
 
-namespace x600d1dea.utils
+namespace x600d1dea.stubs.utils
 {
 	public class ResMgr
 	{

@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using x600d1dea.stubs.utils;
 
-namespace x600d1dea.networking
+namespace x600d1dea.stubs.networking
 {
 	public class Chan
 	{
@@ -23,7 +24,7 @@ namespace x600d1dea.networking
 		public event DataHandler recvHandler;
 		public event ErrorHandler errorHandler;
 
-		utils.RingPacket ringPacket = new utils.RingPacket();
+		RingPacket ringPacket = new RingPacket();
 		IChanModule chanModule;
 
 		public Chan(DataHandler sendHandler)
