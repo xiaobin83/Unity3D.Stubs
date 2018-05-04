@@ -9,7 +9,7 @@ namespace x600d1dea.utils
 	{
 		public class ResourcesWrapper
 		{
-			public virtual byte[] LoadEncryptedBytes(string path)
+			public virtual byte[] LoadBytes(string path)
 			{
 				var asset = Resources.Load<TextAsset>(path);
 				if (asset != null)
@@ -81,7 +81,7 @@ namespace x600d1dea.utils
 		{
 			if (encrypted)
 			{
-				var bytes = rw.LoadEncryptedBytes(path);
+				var bytes = rw.LoadBytes(path);
 				if (bytes != null)
 				{
 					if (pike != null)
@@ -94,22 +94,14 @@ namespace x600d1dea.utils
 				}
 				return null;
 			}
-			else
-			{
-				var asset = rw.Load<TextAsset>(path);
-				if (asset != null)
-				{
-					return asset.bytes;
-				}
-			}
-			return null;
+			return rw.LoadBytes(path);
 		}
 
 		public static string LoadText(string path, bool encrypted=false)
 		{
 			if (encrypted)
 			{
-				var bytes = rw.LoadEncryptedBytes(path);
+				var bytes = rw.LoadBytes(path);
 				if (bytes != null)
 				{
 					if (pike != null)
