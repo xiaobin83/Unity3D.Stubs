@@ -82,8 +82,7 @@ namespace x600d1dea.stubs.networking
 		}
 	}
 
-}
-	public class ConnectToPlayer : EditorWindow 
+	public class ConnectToPlayer : EditorWindow
 	{
 		EditorConnection editorConnection;
 		int currentPlayerID = -1;
@@ -93,17 +92,16 @@ namespace x600d1dea.stubs.networking
 		{
 			editorConnection = EditorConnection.instance;
 			editorConnection.Initialize();
-			//editorConnection.RegisterConnection(OnPlayerConnected);
-			//editorConnection.RegisterDisconnection(OnPlayerDisconnected);
-			editorConnection.Register(x600d1dea.stubs.networking.EditorConnectionMessageID.Player, OnPlayerMessageReceived);
-
-			//PlayerConnectorAttribute.Connect(this);
+			editorConnection.RegisterConnection(OnPlayerConnected);
+			editorConnection.RegisterDisconnection(OnPlayerDisconnected);
+			editorConnection.Register(EditorConnectionMessageID.Player, OnPlayerMessageReceived);
+			PlayerConnectorAttribute.Connect(this);
 		}
 
 		void OnDisable()
 		{
-			//PlayerConnectorAttribute.Disconnect(this);
-			editorConnection.Unregister(x600d1dea.stubs.networking.EditorConnectionMessageID.Player, OnPlayerMessageReceived);
+			PlayerConnectorAttribute.Disconnect(this);
+			editorConnection.Unregister(EditorConnectionMessageID.Player, OnPlayerMessageReceived);
 			editorConnection.DisconnectAll();
 			editorConnection = null;
 		}
@@ -124,7 +122,6 @@ namespace x600d1dea.stubs.networking
 		public event Action onGUI;
 		public event Action<string, List<string>> onPlayerMessageReceived;
 
-		bool connected = false;
 		void OnGUI()
 		{
 			if (onGUI != null)
@@ -149,8 +146,9 @@ namespace x600d1dea.stubs.networking
 
 		public void Send(string message)
 		{
-			editorConnection.Send(x600d1dea.stubs.networking.EditorConnectionMessageID.Editor, message.SerializeToByteArray());
+			editorConnection.Send(EditorConnectionMessageID.Editor, message.SerializeToByteArray());
 		}
 
 	}
 
+}
