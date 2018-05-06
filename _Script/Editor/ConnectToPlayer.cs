@@ -24,39 +24,9 @@ namespace x600d1dea.stubs.networking
 		static List<Action<bool, ConnectToPlayer>> GetAllConnectors()
 		{
 			var c = new List<Action<bool, ConnectToPlayer>>();
-			IEnumerable<Type> allTypes = null;
-			try
+			var methods = GetMethodInfo.WithAttr<PlayerConnectorAttribute>(fromEditor:true);
+			foreach (var m in methods)
 			{
-				allTypes = Assembly.Load("Assembly-CSharp-Editor").GetTypes().AsEnumerable();
-			}
-			catch
-			{ }
-			try
-			{
-				var typesInPlugins = Assembly.Load("Assembly-CSharp-Editor-firstpass").GetTypes();
-				if (allTypes != null)
-					allTypes = allTypes.Union(typesInPlugins);
-				else
-					allTypes = typesInPlugins;
-			}
-			catch
-			{ }
-			if (allTypes == null)
-			{
-				return c;
-			}
-
-			var methods = allTypes.SelectMany(t => t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-				.Where(m => m.GetCustomAttributes(typeof(PlayerConnectorAttribute), false).Length > 0)
-				.OrderBy(m =>
-				{
-					var attr = (PlayerConnectorAttribute)m.GetCustomAttributes(typeof(PlayerConnectorAttribute), false)[0];
-					return attr.name;
-				})
-				.ToArray();
-			for (int i = 0; i < methods.Length; ++i)
-			{
-				var m = methods[i];
 				var cc = (Action<bool, ConnectToPlayer>)Delegate.CreateDelegate(typeof(Action<bool, ConnectToPlayer>), m);
 				c.Add(cc);
 			}
