@@ -18,8 +18,9 @@ namespace x600d1dea.stubs.utils
 		{
 			public float timeOutTime = 60;
 			public bool responseAsBinary = false;
+			public bool requestAsJson = true;
 
-			public System.Uri srv;
+			public Uri srv;
 			public string function;
 			public Method method;
 			public Dictionary<string, object> parameters;
@@ -84,11 +85,32 @@ namespace x600d1dea.stubs.utils
 			Method method,
 			Dictionary<string, object> parameter,
             WebRequestRespondedCallback callback,
-			Context	context	= null,
-            string parametersStr = "")
+			Context	context	= null)
 		{
 			if (context == null) context = defaultContext;
-			context = context.Clone(srv, function, method, parameter, parametersStr, callback);
+			context = context.Clone(srv, function, method, parameter, null, callback);
+
+			if (srv != null)
+			{
+				TaskManager.StartUnbreakableCoroutine(MakeRequestTo_(context));
+			}
+			else
+			{
+				if (callback != null)
+					callback(WebExceptionStatus.ConnectFailure, HttpStatusCode.Unused, null, null, null, context);
+			}
+		}
+
+		public static void MakeRequestTo(
+			Uri srv,	
+			string function,
+			Method method,
+			string parameter,
+            WebRequestRespondedCallback callback,
+			Context	context	= null)
+		{
+			if (context == null) context = defaultContext;
+			context = context.Clone(srv, function, method, null, parameter, callback);
 
 			if (srv != null)
 			{
@@ -214,7 +236,6 @@ namespace x600d1dea.stubs.utils
 						if (This.attachement != null)
 						{
 							// send	attachements with postData
-
 							string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
 							This.req.ContentType = "multipart/form-data; boundary=" + boundary;
 
@@ -251,7 +272,14 @@ namespace x600d1dea.stubs.utils
 						}
 						else
 						{
-							This.req.ContentType = "application/x-www-form-urlencoded";
+							if (This.context.requestAsJson)
+							{
+								This.req.ContentType = "application/json";
+							}
+							else
+							{
+								This.req.ContentType = "application/x-www-form-urlencoded";
+							}
 							stream.Write(This.postData, 0, This.postData.Length);
 							stream.Close();
 						}
@@ -333,6 +361,7 @@ namespace x600d1dea.stubs.utils
 					}
 					This.SetRespondedWithClientError(e);
 				}
+
 			}
 
 			public WebExceptionStatus webExceptionStatus = WebExceptionStatus.Success;
@@ -463,7 +492,7 @@ namespace x600d1dea.stubs.utils
 			var url = context.srv;
 			if (!string.IsNullOrEmpty(context.function))
 			{
-				url = new System.Uri(context.srv, context.function);
+				url = new Uri(context.srv, context.function);
 			}
 
 			HttpWebRequest req = null;
@@ -476,21 +505,21 @@ namespace x600d1dea.stubs.utils
 			if (context.method == Method.GET)
 			{
 				url = BuildGetQuery(url, context.parameters);
-                req = System.Net.WebRequest.Create(url.AbsoluteUri) as HttpWebRequest;
+                req = WebRequest.Create(url.AbsoluteUri) as HttpWebRequest;
 				req.CookieContainer = new CookieContainer();
 				req.Method = "GET";
 				req.KeepAlive = false;
 			}
 			else if (context.method == Method.POST)
 			{
-				req = System.Net.WebRequest.Create(url.ToString()) as HttpWebRequest;
+				req = WebRequest.Create(url.ToString()) as HttpWebRequest;
 				req.Method = "POST";
 				req.KeepAlive = false;
 
 				req.CookieContainer = new CookieContainer();
 				if (context.parameters != null && context.parameters.Count > 0)
 				{
-					var sb = new System.Text.StringBuilder();
+					var sb = new StringBuilder();
 					var first = true;
 					foreach (var kv in context.parameters)
 					{
@@ -510,11 +539,11 @@ namespace x600d1dea.stubs.utils
 							first = false;
 						}
 					}
-					postData = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
+					postData = Encoding.UTF8.GetBytes(sb.ToString());
 				}
-				else if(!string.IsNullOrEmpty(context.parametersStr))
-                {
-                    postData = System.Text.Encoding.UTF8.GetBytes(context.parametersStr);
+				else if (!string.IsNullOrEmpty(context.parametersStr))
+				{
+					postData = Encoding.UTF8.GetBytes(context.parametersStr);
 				}
 			}
 
@@ -562,7 +591,7 @@ namespace x600d1dea.stubs.utils
 
 		public static void Get(System.Uri srv, string function, string queryString, WebRequestRespondedCallback callback, Context context = null)
 		{
-			MakeRequestTo(srv, function, Method.GET, null, callback, context, queryString);
+			MakeRequestTo(srv, function, Method.GET, queryString, callback, context);
 		}
 
 		public static void Download(string url, System.Action<byte[]> complete)
@@ -591,20 +620,26 @@ namespace x600d1dea.stubs.utils
 			}
 		}
 
-		public static void Post(System.Uri srv, string function, Dictionary<string, object> parameter, WebRequestRespondedCallback callback, Context context = null)
+		public static void POST(Uri srv, string function, Dictionary<string, object> parameter, WebRequestRespondedCallback callback, Context context = null)
 		{
 			MakeRequestTo(srv, function, Method.POST, parameter, callback, context);
 		}
 
-		public static void GetWithAuth(System.Uri srv, string function, Dictionary<string, object> parameter, WebRequestRespondedCallback callback, Context context = null)
+		public static void POST(Uri srv, string function, string parameter, WebRequestRespondedCallback callback, Context context = null)
+		{
+			MakeRequestTo(srv, function, Method.POST, parameter, callback, context);
+		}
+
+		public static void GET(Uri srv, string function, Dictionary<string, object> parameter, WebRequestRespondedCallback callback, Context context = null)
 		{
 			MakeRequestTo(srv, function, Method.GET, parameter, callback, context);
 		}
 
-		public static void PostWithAuth(System.Uri srv, string function, Dictionary<string, object> parameter, WebRequestRespondedCallback callback, Context context = null)
+		public static void GET(Uri srv, string function, string parameter, WebRequestRespondedCallback callback, Context context = null)
 		{
-			MakeRequestTo(srv, function, Method.POST, parameter, callback, context);
+			MakeRequestTo(srv, function, Method.GET, parameter, callback, context);
 		}
+
 
 		internal static bool DefaultRetryCondition(WebExceptionStatus status, HttpStatusCode code)
 		{
