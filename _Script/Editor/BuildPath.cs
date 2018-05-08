@@ -32,6 +32,17 @@ namespace x600d1dea.stubs
 			}
 		}
 
+		/// <summary>
+		/// ${ProjectDir}/Assets/_Staging/Resources
+		/// </summary>
+		public static string stagingResourcesDir
+		{
+			get
+			{
+				return Path.Combine(stagingAssetsDir, "Resources");
+			}
+		}
+
 
 		public static string externalLibsName = "Unity3D.ExternalLibs";
 

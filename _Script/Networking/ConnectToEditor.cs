@@ -26,32 +26,16 @@ namespace x600d1dea.stubs.networking
 		}
 
 		PlayerConnection playerConnection;
-		int currentEditorID = -1;
 
-		void Awake()
+		void OnEnable()
 		{
 			playerConnection = PlayerConnection.instance; 
-			playerConnection.RegisterConnection(OnEditorConnected);
-			playerConnection.RegisterDisconnection(OnEditorDisconnected);
 			playerConnection.Register(EditorConnectionMessageID.Editor, OnEditorMessageReceived);
 		}
-		void OnDestroy()
+		
+		void OnDisable()
 		{
 			playerConnection.Unregister(EditorConnectionMessageID.Editor, OnEditorMessageReceived);
-			playerConnection.DisconnectAll();
-		}
-
-		void OnEditorConnected(int editorID)
-		{
-			Debug.LogFormat("OnEditorConnected {0}", editorID);
-			currentEditorID = editorID;
-		}
-
-		void OnEditorDisconnected(int editorID)
-		{
-			Debug.LogFormat("OnEditorDisconnectedConnected {0}", editorID);
-			if (currentEditorID == editorID)
-				currentEditorID = -1;
 			playerConnection.DisconnectAll();
 		}
 
@@ -60,17 +44,14 @@ namespace x600d1dea.stubs.networking
 		public void OnEditorMessageReceived(MessageEventArgs args)
 		{
 			var jsonString = args.data.Deserialize<string>();
-			Debug.LogFormat("OnEditorMessageReceived {0} {1}", args.playerId, jsonString);
-			if (args.playerId == currentEditorID)
+			//Debug.LogFormat("OnEditorMessageReceived {0} {1}", args.playerId, jsonString);
+			var retStrings = new List<string>();
+			onEditorMessageReceived(jsonString, retStrings);
+			if (playerConnection.isConnected)
 			{
-				var retStrings = new List<string>();
-				onEditorMessageReceived(jsonString, retStrings);
-				if (playerConnection.isConnected)
+				foreach (var r in retStrings)
 				{
-					foreach (var r in retStrings)
-					{
-						playerConnection.Send(EditorConnectionMessageID.Player, r.SerializeToByteArray());
-					}
+					playerConnection.Send(EditorConnectionMessageID.Player, r.SerializeToByteArray());
 				}
 			}
 		}

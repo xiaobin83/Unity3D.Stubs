@@ -39,21 +39,15 @@ namespace x600d1dea.stubs
 
 		string CheckCreatePath(string path)
 		{
-			var s = path.Split('/', '\\');
-			var pa = string.Empty;
-			foreach (var p in s)
+			if (!Directory.Exists(path))
 			{
-				pa = Path.Combine(pa, p);
-				if (!Directory.Exists(pa))
-				{
-					Directory.CreateDirectory(pa);
-				}
+				Directory.CreateDirectory(path);
 			}
 			return path;
 		}
 		string CheckPath(string subPath)
 		{
-			return CheckCreatePath(Path.Combine("Assets/_Generated/Resources", subPath));
+			return CheckCreatePath(Path.Combine(BuildPath.stagingResourcesDir, subPath));
 		}
 
 		string FindExportGameDataScript()
@@ -138,9 +132,9 @@ namespace x600d1dea.stubs
 								Cmd.Execute(piker + " -i " + jsonOutput + " -o " + encryptOutput + " -k " + config.cryptoKey.ToString());
 								Debug.Assert(File.Exists(encryptOutput));
 								AssetDatabase.DeleteAsset(jsonOutput);
-								AssetDatabase.Refresh();
 							}
 						}
+						AssetDatabase.Refresh();
 					}
 					else
 					{
