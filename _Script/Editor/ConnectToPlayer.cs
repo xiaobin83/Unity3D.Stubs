@@ -75,7 +75,7 @@ namespace x600d1dea.stubs.networking
 
 		void OnPlayerConnected(int playerID)
 		{
-			Debug.LogFormat("OnPlayerConnected {0}", playerID);
+			//Debug.LogFormat("OnPlayerConnected {0}", playerID);
 			currentPlayerID = playerID;
 		}
 
