@@ -7,7 +7,7 @@ namespace x600d1dea.stubs
 {
 	public class Stubs 
 	{
-		[MenuItem("Unity3D.Stubs/Connect To Player")]
+		[MenuItem("x600d1dea/Stubs/Connect To Player")]
 		static void ShowConnectToPlayer()
 		{
 			var wnd = EditorWindow.GetWindow<networking.ConnectToPlayer>("Connect To Player");

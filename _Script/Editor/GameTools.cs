@@ -11,7 +11,7 @@ namespace x600d1dea.stubs
 
 		const string configAsset = "Assets/Unity3D.Stubs.GameTools.asset";
 
-		[MenuItem("Unity3D.Stubs/Game Tools")]
+		[MenuItem("x600d1dea/Stubs/Game Tools")]
 		static void ShowGameTools()
 		{
 			var gameTools = EditorWindow.GetWindow<GameTools>("Game Tools");
