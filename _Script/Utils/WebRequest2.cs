@@ -451,7 +451,7 @@ namespace x600d1dea.stubs.utils
 			return value is Dictionary<string, byte[]>;
 		}
 
-		public static System.Uri BuildGetQuery(System.Uri url, Dictionary<string, object> parameters)
+		public static Uri BuildGetQuery(System.Uri url, Dictionary<string, object> parameters)
 		{
 			if (parameters != null && parameters.Count > 0)
 			{
@@ -589,16 +589,12 @@ namespace x600d1dea.stubs.utils
 			}
 		}
 
-		public static void Get(System.Uri srv, string function, string queryString, WebRequestRespondedCallback callback, Context context = null)
-		{
-			MakeRequestTo(srv, function, Method.GET, queryString, callback, context);
-		}
 
-		public static void Download(string url, System.Action<byte[]> complete)
+		public static void Download(string url, Action<byte[]> complete)
 		{
 			try
 			{
-				Get(new System.Uri(url), null, null,
+				GET(new Uri(url), string.Empty, string.Empty,
 					(s,	code, payload, _1, _2, _3) =>
 					{
 						if (s == WebExceptionStatus.Success
