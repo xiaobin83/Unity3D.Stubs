@@ -4,31 +4,12 @@ using UnityEngine;
 
 namespace x600d1dea.stubs.utils
 {
-	public static class ListPool<T>
+	public class ListPool<T> : Pool<List<T>>
 	{
-		static List<List<T>> pool = new List<List<T>>();
-		public static List<T> Get()
-		{
-			if (pool.Count > 0)
-			{
-				var r = pool[pool.Count - 1];
-				pool.RemoveAt(pool.Count - 1);
-				return r;
-			}
-			else
-			{
-				return new List<T>();
-			}
-		}
-		public static void Release(List<T> list)
+		new public static void Release(List<T> list)
 		{
 			list.Clear();
-			pool.Add(list);
-		}
-
-		public static void Clear()
-		{
-			pool.Clear();
+			Pool<List<T>>.Release(list);
 		}
 	}
 }
