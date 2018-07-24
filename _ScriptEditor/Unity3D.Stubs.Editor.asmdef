@@ -1,0 +1,12 @@
+{
+    "name": "Unity3D.Stubs.Editor",
+    "references": [
+        "Unity3D.Stubs"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

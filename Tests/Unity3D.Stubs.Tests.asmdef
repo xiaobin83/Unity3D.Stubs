@@ -1,0 +1,14 @@
+{
+    "name": "Unity3D.Stubs.Tests",
+    "references": [
+        "Unity3D.Stubs"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
