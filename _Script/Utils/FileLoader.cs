@@ -27,7 +27,8 @@ namespace x600d1dea.stubs.utils
 			string content = null;
 			if (filePath == null)
 			{
-				var asset = ResMgr.Load<TextAsset>(path);
+				filePath = Path.GetFileNameWithoutExtension(path);
+				var asset = ResMgr.Load<TextAsset>(filePath);
 				if (asset != null)
 				{
 					content = asset.text;
