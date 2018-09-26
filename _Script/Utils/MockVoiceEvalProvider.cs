@@ -21,6 +21,8 @@ namespace x600d1dea.stubs.utils
 		public bool StartRecordEval(string toEval)
 		{
 			Debug.LogFormat("MockVoiceEvalProvider.StartRecordEval \"{0}\"", toEval);
+			VoiceEvalCallbacks.OnResult("on result");
+			VoiceEvalCallbacks.OnEnd("on end");
 			return true;
 		}
 
