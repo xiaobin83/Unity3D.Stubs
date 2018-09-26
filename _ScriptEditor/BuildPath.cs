@@ -145,6 +145,21 @@ namespace x600d1dea.stubs
 
 		}
 
+		/// <summary>
+		/// Combine paths
+		/// </summary>
+		/// <param name="path"> first part of path</param>
+		/// <param name="others"> rest of path to be combined</param>
+		/// <returns></returns>
+		public static string Combine(string path, params string[] others)
+		{
+			for (int i = 0; i < others.Length; ++i)
+			{
+				path = Path.Combine(path, others[i]);
+			}
+			return path;
+		}
+
 
 
 	}
