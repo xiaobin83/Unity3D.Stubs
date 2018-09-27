@@ -23,10 +23,12 @@ namespace x600d1dea.stubs.utils
 		{
 			Debug.LogFormat("MockVoiceEvalProvider.StartRecordEval \"{0}\"", toEval);
 			var result = new Dictionary<string, object>();
-			result.Add("wavPath", "not_a_path");
+			result.Add("wavPath", "D:\\test.wav");
 			var resultObject = new Dictionary<string, object>();
-			result.Add("result", resultObject);
-			resultObject.Add("refText", toEval);
+			result.Add("result", new Dictionary<string, object>(){
+				{ "refText", toEval },
+				{ "result", resultObject }
+			});
 			resultObject.Add("overall", 70);
 			resultObject.Add("accuracy", 70);
 			resultObject.Add("fluency", new Dictionary<string, int>() {
