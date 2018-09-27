@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
 
 
 namespace x600d1dea.stubs.utils
@@ -21,7 +22,26 @@ namespace x600d1dea.stubs.utils
 		public bool StartRecordEval(string toEval)
 		{
 			Debug.LogFormat("MockVoiceEvalProvider.StartRecordEval \"{0}\"", toEval);
-			VoiceEvalCallbacks.OnResult("on result");
+			var result = new Dictionary<string, object>();
+			result.Add("wavPath", "not_a_path");
+			var resultObject = new Dictionary<string, object>();
+			result.Add("result", resultObject);
+			resultObject.Add("refText", toEval);
+			resultObject.Add("overall", 70);
+			resultObject.Add("accuracy", 70);
+			resultObject.Add("fluency", new Dictionary<string, int>() {
+				{"overall", 70 },
+				{"pause", 0 },
+				{"speed", 70 },
+			});
+			resultObject.Add("rhythm", new Dictionary<string, int>() {
+				{"overall", 70 },
+				{"stress", 0 },
+				{"sense", 70 },
+				{"tone", 0 },
+			});
+			var jsonString = JsonConvert.SerializeObject(result);
+			VoiceEvalCallbacks.OnResult(jsonString);
 			VoiceEvalCallbacks.OnEnd("on end");
 			return true;
 		}
